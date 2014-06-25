@@ -1,0 +1,1 @@
+nuget pack ActiveDirectoryPhotoToolkit.nuspec -Symbols

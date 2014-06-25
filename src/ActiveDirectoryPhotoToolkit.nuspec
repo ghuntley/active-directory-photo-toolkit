@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>ActiveDirectoryPhotoToolkit</id>
+    <version>0.1.0</version>
+    <authors>ghuntley</authors>
+    <owners>ghuntley</owners>
+    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/ghuntley/active-directory-photo-toolkit</projectUrl>
+    <iconUrl>https://i.imgur.com/MJITwBP.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A library for working with Active Directory to retrieve or set a users thumbnailPhoto.</description>
+    <summary>A library for working with Active Directory to retrieve or set a users thumbnailPhoto.</summary>
+    <copyright>Copyright 2014</copyright>
+    <tags>Active Directory thumbnailPhoto Profile Photo Image Jpg Jpeg Bitmap</tags>
+    <dependencies>
+      <dependency id="ImageProcessor" version="1.9.3.0"/>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="ActiveDirectoryPhotoToolkit\bin\Release\ActiveDirectoryPhotoToolkit.*" target="lib/net40" />
+    <file src="ActiveDirectoryPhotoToolkit\*.cs" target="src" />
+  </files>
+</package>
