@@ -79,5 +79,39 @@ namespace ActiveDirectoryPhotoToolkit
                 }
             }
         }
+
+        /// <summary>
+        ///     Returns a 96 (w) x 96 (h) PNG image as byte[] of the Active Directory thumbnailPhoto for the specified username.
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public Byte[] GetThumbnailPhotoAsPng(string userName)
+        {
+            byte[] bytes = GetThumbnailPhotoAsBitmap(userName);
+
+            const int imageQuality = 95;
+            var imageSize = new Size(96, 96);
+
+            using (var inStream = new MemoryStream(bytes))
+            {
+                using (var outStream = new MemoryStream())
+                {
+                    using (var imageFactory = new ImageFactory())
+                    {
+                        imageFactory.Load(inStream)
+                            .Format(ImageFormat.Png)
+                            .Resize(imageSize)
+                            .Quality(imageQuality)
+                            .Save(outStream);
+                    }
+
+                    // rewind the memory stream so that it can be exported.
+                    outStream.Position = 0;
+
+                    return outStream.ToArray();
+                }
+            }
+
+        }
     }
 }
