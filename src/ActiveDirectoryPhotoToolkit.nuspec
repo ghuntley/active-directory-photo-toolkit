@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ActiveDirectoryPhotoToolkit</id>
-    <version>0.2.0</version>
+    <version>1.0.0</version>
     <authors>Geoffrey Huntley</authors>
     <owners>ghuntley</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
