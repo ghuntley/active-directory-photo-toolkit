@@ -72,7 +72,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ImageProcessor">
-      <HintPath>..\packages\ImageProcessor.1.9.3.0\lib\ImageProcessor.dll</HintPath>
+      <HintPath>..\packages\ImageProcessor.2.1.0.0\lib\net40\ImageProcessor.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

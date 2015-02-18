@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using ImageProcessor;
+using ImageProcessor.Imaging.Formats;
 
 namespace ActiveDirectoryPhotoToolkit
 {
@@ -66,7 +67,7 @@ namespace ActiveDirectoryPhotoToolkit
                     using (var imageFactory = new ImageFactory())
                     {
                         imageFactory.Load(inStream)
-                            .Format(ImageFormat.Jpeg)
+                            .Format(new JpegFormat())
                             .Resize(imageSize)
                             .Quality(imageQuality)
                             .Save(outStream);
@@ -99,7 +100,7 @@ namespace ActiveDirectoryPhotoToolkit
                     using (var imageFactory = new ImageFactory())
                     {
                         imageFactory.Load(inStream)
-                            .Format(ImageFormat.Png)
+                            .Format(new PngFormat())
                             .Resize(imageSize)
                             .Quality(imageQuality)
                             .Save(outStream);
