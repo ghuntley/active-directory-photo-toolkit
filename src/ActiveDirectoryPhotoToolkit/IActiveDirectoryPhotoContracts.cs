@@ -22,5 +22,12 @@ namespace ActiveDirectoryPhotoToolkit
 
             throw new NotImplementedException();
         }
+
+        public byte[] GetThumbnailPhotoAsPng(string userName)
+        {
+            Contract.Requires(!String.IsNullOrWhiteSpace(userName));
+
+            throw new NotImplementedException();
+        }
     }
 }
