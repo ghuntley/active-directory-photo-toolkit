@@ -8,5 +8,6 @@ namespace ActiveDirectoryPhotoToolkit
     {
         Byte[] GetThumbnailPhotoAsBitmap(string userName);
         Byte[] GetThumbnailPhotoAsJpeg(string userName);
+        Byte[] GetThumbnailPhotoAsPng(string userName);
     }
 }
