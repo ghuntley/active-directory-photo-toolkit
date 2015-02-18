@@ -1,8 +1,8 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <package >
   <metadata>
     <id>ActiveDirectoryPhotoToolkit</id>
-    <version>1.0.0</version>
+    <version>$version$</version>
     <authors>Geoffrey Huntley</authors>
     <owners>ghuntley</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
@@ -14,11 +14,11 @@
     <copyright>Copyright 2014</copyright>
     <tags>Active Directory thumbnailPhoto Profile Photo Image Jpg Jpeg Bitmap</tags>
     <dependencies>
-      <dependency id="ImageProcessor" version="1.9.3.0"/>
+      <dependency id="ImageProcessor" version="2.1.0.0"/>
     </dependencies>
   </metadata>
   <files>
-    <file src="ActiveDirectoryPhotoToolkit\bin\Release\ActiveDirectoryPhotoToolkit.*" target="lib/net40" />
-    <file src="ActiveDirectoryPhotoToolkit\*.cs" target="src" />
+    <file src="..\src\ActiveDirectoryPhotoToolkit\bin\Release\ActiveDirectoryPhotoToolkit.*" target="lib/net40" />
+    <file src="..\src\ActiveDirectoryPhotoToolkit\*.cs" target="src" />
   </files>
 </package>
