@@ -53,7 +53,7 @@ build:
  
 # scripts to run before build
 before_build:
-  - nuget restore src\StatDNS.sln
+  - nuget restore src\ActiveDirectoryPhotoToolkit.sln
   
 # scripts to run after build
 after_build:
