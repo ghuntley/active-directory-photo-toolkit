@@ -22,6 +22,10 @@ Retreive a users profile photo from Active Directory and convert from native for
 
     var jpeg = adPhoto.GetThumbnailPhotoAsJpeg("ghuntley");
 
+Retreive a users profile photo from Active Directory and convert from native format (Bitmap) to a Png:
+
+    var png = adPhoto.GetThumbnailPhotoAsPng("ghuntley");
+
 ## Remarks
 
 The ability to set a users profile photo is within scope but at this stage is not implemented. This will be revisted in the future but please consider forking this libary, implementing it yourself and submitting a pull-request.
