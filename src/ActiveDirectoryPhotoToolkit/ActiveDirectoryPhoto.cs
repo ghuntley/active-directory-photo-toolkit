@@ -39,7 +39,7 @@ namespace ActiveDirectoryPhotoToolkit
             {
                 byte[] bytes;
 
-                using (var entry = (DirectoryEntry) userPrincipal.GetUnderlyingObject())
+                using (var entry = result.GetUnderlyingObject() as DirectoryEntry)
                 {
                     if (entry.Properties["thumbnailPhoto"] != null)
                     {
@@ -47,31 +47,68 @@ namespace ActiveDirectoryPhotoToolkit
                         bytes = entry.Properties["thumbnailPhoto"][0] as byte[];
 
                         // if not bimap do above then do this...
-                        using (var inStream = new MemoryStream(bytes))
-                        {
-                            using (var outStream = new MemoryStream())
-                            {
-                                using (var imageFactory = new ImageFactory())
-                                {
-                                    imageFactory.Load(inStream)
-                                        .Format(new JpegFormat())
-                                        //.Format(new PngFormat())
-                                        .Resize(imageSize)
-                                        .Quality(imageQuality)
-                                        .Save(outStream);
-                                }
+                        //using (var inStream = new MemoryStream(bytes))
+                        //{
+                        //    using (var outStream = new MemoryStream())
+                        //    {
+                        //        using (var imageFactory = new ImageFactory())
+                        //        {
+                        //            imageFactory.Load(inStream)
+                        //                .Format(new JpegFormat())
+                        //                //.Format(new PngFormat())
+                        //                .Resize(imageSize)
+                        //                .Quality(imageQuality)
+                        //                .Save(outStream);
+                        //        }
 
-                                // rewind the memory stream so that it can be exported.
-                                outStream.Position = 0;
+                        //        // rewind the memory stream so that it can be exported.
+                        //        outStream.Position = 0;
 
-                                return outStream.ToArray();
-                            }
-                        }
+                        //        return outStream.ToArray();
+                        //    }
+                        //}
+
+                        return bytes;
                     }
                 }
             }
 
             return null;
+        }
+
+        public void SetThumbnailPhoto(string userName, string thumbNailLocation)
+        {
+            const int imageQuality = 95;
+            var imageSize = new Size(96, 96);
+
+            var principalContext = new PrincipalContext(ContextType.Domain);
+
+            var userPrincipal = new UserPrincipal(principalContext)
+            {
+                SamAccountName = userName
+            };
+
+            var principalSearcher = new PrincipalSearcher
+            {
+                QueryFilter = userPrincipal
+            };
+
+            var result = principalSearcher.FindOne();
+
+            if (result != null)
+            {
+                byte[] bytes = File.ReadAllBytes(thumbNailLocation);
+
+                using (var entry = result.GetUnderlyingObject() as DirectoryEntry)
+                {
+                    if (entry.Properties["thumbnailPhoto"] != null)
+                    {
+                        //if bitmap just return this...
+                        entry.Properties["thumbnailPhoto"][0] = bytes;
+                        entry.CommitChanges();
+                    }
+                }
+            }
         }
     }
 }

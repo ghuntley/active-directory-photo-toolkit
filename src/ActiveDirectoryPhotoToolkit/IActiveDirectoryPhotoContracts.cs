@@ -12,5 +12,12 @@ namespace ActiveDirectoryPhotoToolkit
 
             throw new NotImplementedException();
         }
+
+        public void SetThumbnailPhoto(string userName, string thumbNailLocation)
+        {
+            Contract.Requires(!string.IsNullOrWhiteSpace(userName));
+
+            throw new NotImplementedException();
+        }
     }
 }
