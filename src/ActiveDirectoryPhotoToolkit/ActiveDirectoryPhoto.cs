@@ -11,6 +11,11 @@ namespace ActiveDirectoryPhotoToolkit
 {
     public class ActiveDirectoryPhoto : IActiveDirectoryPhoto
     {
+        public enum Format
+        {
+            Bitmap, JPG, PNG
+        }
+
         public byte[] GetThumbnailPhoto(string userName, string format)
         {
             const int imageQuality = 95;

@@ -9,7 +9,7 @@ namespace ActiveDirectoryPhotoToolkit.Example
         private static void Main(string[] args)
         {
             // 1. setup
-            ActiveDirectoryPhoto = new ActiveDirectoryPhoto();
+            
 
             // 2. save thumbnailPhoto to disk.
             SaveThumbnailPhotoToDisk();
@@ -17,6 +17,8 @@ namespace ActiveDirectoryPhotoToolkit.Example
 
         public static void SaveThumbnailPhotoToDisk()
         {
+            var activeDirectoryPhoto = new ActiveDirectoryPhoto();
+
             const string username = "ghuntley";
 
             var thumbnailPhoto = ActiveDirectoryPhoto.GetThumbnailPhoto(username, "JPG");
