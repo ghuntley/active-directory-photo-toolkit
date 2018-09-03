@@ -13,11 +13,14 @@ namespace ActiveDirectoryPhotoToolkit.Example
             Console.Write("Username: ");
             var username = Console.ReadLine();
 
+            Console.Write("Format: ");
+            var format = Console.ReadLine();
+
             activeDirectoryPhoto.SetThumbnailPhoto(username, @"C:\face2.jpg");
 
-            var thumbnailPhoto = activeDirectoryPhoto.GetThumbnailPhoto(username, "JPG");
+            var thumbnailPhoto = activeDirectoryPhoto.GetThumbnailPhoto(username, format);
 
-            File.WriteAllBytes(username + ".png", thumbnailPhoto);
+            File.WriteAllBytes(username + format, thumbnailPhoto);
         }
     }
 }

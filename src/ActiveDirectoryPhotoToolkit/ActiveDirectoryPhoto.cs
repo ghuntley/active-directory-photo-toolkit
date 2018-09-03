@@ -46,27 +46,39 @@ namespace ActiveDirectoryPhotoToolkit
                         //if bitmap just return this...
                         bytes = entry.Properties["thumbnailPhoto"][0] as byte[];
 
-                        // if not bimap do above then do this...
-                        //using (var inStream = new MemoryStream(bytes))
-                        //{
-                        //    using (var outStream = new MemoryStream())
-                        //    {
-                        //        using (var imageFactory = new ImageFactory())
-                        //        {
-                        //            imageFactory.Load(inStream)
-                        //                .Format(new JpegFormat())
-                        //                //.Format(new PngFormat())
-                        //                .Resize(imageSize)
-                        //                .Quality(imageQuality)
-                        //                .Save(outStream);
-                        //        }
+                        //if not bimap do above then do this...
+                        using (var inStream = new MemoryStream(bytes))
+                        {
+                            using (var outStream = new MemoryStream())
+                            {
+                                using (var imageFactory = new ImageFactory())
+                                {
+                                    imageFactory.Load(inStream);
 
-                        //        // rewind the memory stream so that it can be exported.
-                        //        outStream.Position = 0;
+                                    switch (format)
+                                    {
+                                        case "JPG":
+                                            imageFactory.Format(new JpegFormat());
+                                            break;
+                                        case "PNG":
+                                            imageFactory.Format(new PngFormat());
+                                            break;
+                                        default:
+                                            imageFactory.Format(new BitmapFormat());
+                                            break;
+                                    }
 
-                        //        return outStream.ToArray();
-                        //    }
-                        //}
+                                    imageFactory.Resize(imageSize);
+                                    imageFactory.Quality(imageQuality);
+                                    imageFactory.Save(outStream);
+                                }
+
+                                // rewind the memory stream so that it can be exported.
+                                outStream.Position = 0;
+
+                                return outStream.ToArray();
+                            }
+                        }
 
                         return bytes;
                     }
