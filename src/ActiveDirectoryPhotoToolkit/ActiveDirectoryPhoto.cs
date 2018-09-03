@@ -16,7 +16,7 @@ namespace ActiveDirectoryPhotoToolkit
             Bitmap, JPG, PNG
         }
 
-        public byte[] GetThumbnailPhoto(string userName, string format)
+        public byte[] GetThumbnailPhoto(string userName, Format format)
         {
             const int imageQuality = 95;
             var imageSize = new Size(96, 96);

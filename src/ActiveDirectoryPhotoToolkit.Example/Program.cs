@@ -13,8 +13,7 @@ namespace ActiveDirectoryPhotoToolkit.Example
             Console.Write("Username: ");
             var username = Console.ReadLine();
 
-            Console.Write("Format: ");
-            var format = Console.ReadLine();
+            var format = ActiveDirectoryPhoto.Format.Bitmap;
 
             activeDirectoryPhoto.SetThumbnailPhoto(username, @"C:\face2.jpg");
 
