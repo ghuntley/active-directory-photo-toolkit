@@ -1,13 +1,10 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 
 namespace ActiveDirectoryPhotoToolkit
 {
-    [ContractClass(typeof(IActiveDirectoryPhotoContracts))]
+    [ContractClass(typeof(ActiveDirectoryPhotoContracts))]
     public interface IActiveDirectoryPhoto
     {
-        Byte[] GetThumbnailPhotoAsBitmap(string userName);
-        Byte[] GetThumbnailPhotoAsJpeg(string userName);
-        Byte[] GetThumbnailPhotoAsPng(string userName);
+        byte[] GetThumbnailPhoto(string userName, string format);
     }
 }

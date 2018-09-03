@@ -1,118 +1,72 @@
-﻿using System;
-using System.Diagnostics.Contracts;
-using System.DirectoryServices;
+﻿using System.DirectoryServices;
+using System.DirectoryServices.AccountManagement;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using ImageProcessor;
 using ImageProcessor.Imaging.Formats;
+using System.IO;
+
+
 
 namespace ActiveDirectoryPhotoToolkit
 {
     public class ActiveDirectoryPhoto : IActiveDirectoryPhoto
     {
-        /// <example>
-        ///     var directoryEntry = new DirectoryEntry("LDAP://contoso.com");
-        ///     var adPhoto = new ActiveDirectoryPhoto(directoryEntry);
-        ///     var jpeg = adPhoto.GetThumbnailPhotoAsJpeg("ghuntley");
-        ///     var bitmap = adPhoto.GetThumbnailPhotoAsBitmap("ghuntley");
-        /// </example>
-        /// <param name="directoryEntry"></param>
-        public ActiveDirectoryPhoto(DirectoryEntry directoryEntry)
+        public byte[] GetThumbnailPhoto(string userName, string format)
         {
-            Contract.Requires(directoryEntry != null);
-            Contract.Ensures(DirectoryEntry == directoryEntry);
+            const int imageQuality = 95;
+            var imageSize = new Size(96, 96);
 
-            DirectoryEntry = directoryEntry;
-        }
+            var principalContext = new PrincipalContext(ContextType.Domain);
 
-        public DirectoryEntry DirectoryEntry { get; private set; }
-
-        /// <summary>
-        ///     Returns a Bitmap byte[] of the Active Directory thumbnailPhoto for the specified username.
-        /// </summary>
-        /// <param name="userName"></param>
-        /// -
-        /// <returns></returns>
-        public Byte[] GetThumbnailPhotoAsBitmap(string userName)
-        {
-            var directorySearcher = new DirectorySearcher(DirectoryEntry)
+            var userPrincipal = new UserPrincipal(principalContext)
             {
-                Filter = string.Format("(&(SAMAccountName={0}))", userName)
+                SamAccountName = userName
             };
 
-            SearchResult user = directorySearcher.FindOne();
-
-            var bytes = user.Properties["thumbnailPhoto"][0] as byte[];
-
-            return bytes;
-        }
-
-        /// <summary>
-        ///     Returns a 96 (w) x 96 (h) JPEG image as byte[] of the Active Directory thumbnailPhoto for the specified username.
-        /// </summary>
-        /// <param name="userName"></param>
-        /// <returns></returns>
-        public Byte[] GetThumbnailPhotoAsJpeg(string userName)
-        {
-            byte[] bytes = GetThumbnailPhotoAsBitmap(userName);
-
-            const int imageQuality = 95;
-            var imageSize = new Size(96, 96);
-
-            using (var inStream = new MemoryStream(bytes))
+            var principalSearcher = new PrincipalSearcher
             {
-                using (var outStream = new MemoryStream())
-                {
-                    using (var imageFactory = new ImageFactory())
-                    {
-                        imageFactory.Load(inStream)
-                            .Format(new JpegFormat())
-                            .Resize(imageSize)
-                            .Quality(imageQuality)
-                            .Save(outStream);
-                    }
+                QueryFilter = userPrincipal
+            };
 
-                    // rewind the memory stream so that it can be exported.
-                    outStream.Position = 0;
+            var result = principalSearcher.FindOne();
 
-                    return outStream.ToArray();
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Returns a 96 (w) x 96 (h) PNG image as byte[] of the Active Directory thumbnailPhoto for the specified username.
-        /// </summary>
-        /// <param name="userName"></param>
-        /// <returns></returns>
-        public Byte[] GetThumbnailPhotoAsPng(string userName)
-        {
-            byte[] bytes = GetThumbnailPhotoAsBitmap(userName);
-
-            const int imageQuality = 95;
-            var imageSize = new Size(96, 96);
-
-            using (var inStream = new MemoryStream(bytes))
+            if (result != null)
             {
-                using (var outStream = new MemoryStream())
+                byte[] bytes;
+
+                using (var entry = (DirectoryEntry) userPrincipal.GetUnderlyingObject())
                 {
-                    using (var imageFactory = new ImageFactory())
+                    if (entry.Properties["thumbnailPhoto"] != null)
                     {
-                        imageFactory.Load(inStream)
-                            .Format(new PngFormat())
-                            .Resize(imageSize)
-                            .Quality(imageQuality)
-                            .Save(outStream);
+                        //if bitmap just return this...
+                        bytes = entry.Properties["thumbnailPhoto"][0] as byte[];
+
+                        // if not bimap do above then do this...
+                        using (var inStream = new MemoryStream(bytes))
+                        {
+                            using (var outStream = new MemoryStream())
+                            {
+                                using (var imageFactory = new ImageFactory())
+                                {
+                                    imageFactory.Load(inStream)
+                                        .Format(new JpegFormat())
+                                        //.Format(new PngFormat())
+                                        .Resize(imageSize)
+                                        .Quality(imageQuality)
+                                        .Save(outStream);
+                                }
+
+                                // rewind the memory stream so that it can be exported.
+                                outStream.Position = 0;
+
+                                return outStream.ToArray();
+                            }
+                        }
                     }
-
-                    // rewind the memory stream so that it can be exported.
-                    outStream.Position = 0;
-
-                    return outStream.ToArray();
                 }
             }
 
+            return null;
         }
     }
 }

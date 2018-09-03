@@ -1,18 +1,15 @@
-﻿using System.DirectoryServices;
-using System.IO;
+﻿using System.IO;
 
 namespace ActiveDirectoryPhotoToolkit.Example
 {
     internal class Program
     {
-        public static DirectoryEntry DirectoryEntry { get; private set; }
         public static IActiveDirectoryPhoto ActiveDirectoryPhoto { get; private set; }
 
         private static void Main(string[] args)
         {
             // 1. setup
-            DirectoryEntry = new DirectoryEntry("LDAP://contoso.com");
-            ActiveDirectoryPhoto = new ActiveDirectoryPhoto(DirectoryEntry);
+            ActiveDirectoryPhoto = new ActiveDirectoryPhoto();
 
             // 2. save thumbnailPhoto to disk.
             SaveThumbnailPhotoToDisk();
@@ -22,8 +19,7 @@ namespace ActiveDirectoryPhotoToolkit.Example
         {
             const string username = "ghuntley";
 
-            byte[] thumbnailPhoto = ActiveDirectoryPhoto.GetThumbnailPhotoAsJpeg(username);
-
+            var thumbnailPhoto = ActiveDirectoryPhoto.GetThumbnailPhoto(username, "JPG");
             File.WriteAllBytes(username + ".jpg", thumbnailPhoto);
         }
     }
