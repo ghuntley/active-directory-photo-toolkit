@@ -6,7 +6,7 @@ namespace ActiveDirectoryPhotoToolkit
     [ContractClass(typeof(ActiveDirectoryPhotoContracts))]
     public interface IActiveDirectoryPhoto
     {
-        byte[] GetThumbnailPhoto(string userName, string format);
+        byte[] GetThumbnailPhoto(string userName, ActiveDirectoryPhoto.Format format);
         void SetThumbnailPhoto(string userName, string thumbNailLocation);
     }
 }
