@@ -1,4 +1,5 @@
-﻿using System.DirectoryServices;
+﻿using System;
+using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Drawing;
 using ImageProcessor;
@@ -16,81 +17,75 @@ namespace ActiveDirectoryPhotoToolkit
 
         public Thumbnail GetThumbnailPhoto(string userName, Format format)
         {
-            var principalContext = new PrincipalContext(ContextType.Domain);
+            byte[] bytes = null;
 
-            var userPrincipal = new UserPrincipal(principalContext)
+            using (var principalContext = new PrincipalContext(ContextType.Domain))
             {
-                SamAccountName = userName
-            };
-
-            var principalSearcher = new PrincipalSearcher
-            {
-                QueryFilter = userPrincipal
-            };
-
-            var result = principalSearcher.FindOne();
-
-            if (result != null)
-            {
-                using (var user = result.GetUnderlyingObject() as DirectoryEntry)
+                var userPrincipal = new UserPrincipal(principalContext)
                 {
-                    if (user.Properties["thumbnailPhoto"] != null)
+                    SamAccountName = userName
+                };
+
+                var principalSearcher = new PrincipalSearcher
+                {
+                    QueryFilter = userPrincipal
+                };
+
+                var result = principalSearcher.FindOne();
+
+                if (result != null)
+                {
+                    using (var user = result.GetUnderlyingObject() as DirectoryEntry)
                     {
-                        //if bitmap just return this...
-                        var bytes = user.Properties["thumbnailPhoto"][0] as byte[];
-
-                        //if not bimap do above then do this...
-                        using (var inStream = new MemoryStream(bytes))
-                        {
-                            using (var outStream = new MemoryStream())
-                            {
-                                using (var imageFactory = new ImageFactory())
-                                {
-                                    const int imageQuality = 95;
-                                    var imageSize = new Size(96, 96);
-
-                                    imageFactory.Load(inStream);
-
-                                    switch (format)
-                                    {
-                                        case Format.JPG:
-                                            imageFactory.Format(new JpegFormat());
-                                            break;
-                                        case Format.PNG:
-                                            imageFactory.Format(new PngFormat());
-                                            break;
-                                        case Format.GIF:
-                                            imageFactory.Format(new GifFormat());
-                                            break;
-                                        case Format.BMP:
-                                            imageFactory.Format(new BitmapFormat());
-                                            break;
-                                    }
-
-                                    imageFactory.Resize(imageSize);
-                                    imageFactory.Quality(imageQuality);
-                                    imageFactory.Save(outStream);
-                                }
-
-                                // rewind the memory stream so that it can be exported.
-                                outStream.Position = 0;
-
-                                var thumbnail = new Thumbnail()
-                                {
-                                    Name = userName,
-                                    Format = format,
-                                    ThumbnailData = outStream.ToArray()
-                                };
-
-                                return thumbnail;         
-                            }
-                        }
+                        bytes = user.Properties["thumbnailPhoto"][0] as byte[];
                     }
                 }
             }
-            else
+
+            if (bytes != null)
             {
-                throw new NoMatchingPrincipalException();
+                using (var inStream = new MemoryStream(bytes ?? throw new InvalidOperationException()))
+                using (var outStream = new MemoryStream())
+                {
+                    using (var imageFactory = new ImageFactory())
+                    {
+                        const int imageQuality = 95;
+                        var imageSize = new Size(96, 96);
+
+                        imageFactory.Load(inStream);
+
+                        switch (format)
+                        {
+                            case Format.JPG:
+                                imageFactory.Format(new JpegFormat());
+                                break;
+                            case Format.PNG:
+                                imageFactory.Format(new PngFormat());
+                                break;
+                            case Format.GIF:
+                                imageFactory.Format(new GifFormat());
+                                break;
+                            case Format.BMP:
+                                imageFactory.Format(new BitmapFormat());
+                                break;
+                        }
+
+                        imageFactory.Resize(imageSize);
+                        imageFactory.Quality(imageQuality);
+                        imageFactory.Save(outStream);
+                    }
+
+                    outStream.Position = 0;
+
+                    var thumbnail = new Thumbnail()
+                    {
+                        Name = userName,
+                        Format = format,
+                        ThumbnailData = outStream.ToArray()
+                    };
+
+                    return thumbnail;
+                }
             }
 
             return null;
@@ -98,29 +93,30 @@ namespace ActiveDirectoryPhotoToolkit
 
         public void SetThumbnailPhoto(string userName, string thumbNailLocation)
         {
-           var principalContext = new PrincipalContext(ContextType.Domain);
-
-            var userPrincipal = new UserPrincipal(principalContext)
+            using (var principalContext = new PrincipalContext(ContextType.Domain))
             {
-                SamAccountName = userName
-            };
-
-            var principalSearcher = new PrincipalSearcher
-            {
-                QueryFilter = userPrincipal
-            };
-
-            var result = principalSearcher.FindOne();
-
-            if (result != null)
-            {
-                var bytes = File.ReadAllBytes(thumbNailLocation);
-
-                using (var user = result.GetUnderlyingObject() as DirectoryEntry)
+                var userPrincipal = new UserPrincipal(principalContext)
                 {
-                    //if bitmap just return this...
-                    user.Properties["thumbnailPhoto"][0] = bytes;
-                    user.CommitChanges();
+                    SamAccountName = userName
+                };
+
+                var principalSearcher = new PrincipalSearcher
+                {
+                    QueryFilter = userPrincipal
+                };
+
+                var result = principalSearcher.FindOne();
+
+                if (result != null)
+                {
+                    var bytes = File.ReadAllBytes(thumbNailLocation);
+
+                    using (var user = result.GetUnderlyingObject() as DirectoryEntry)
+                    {
+                        //if bitmap just return this...
+                        user.Properties["thumbnailPhoto"][0] = bytes;
+                        user.CommitChanges();
+                    }
                 }
             }
         }
