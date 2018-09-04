@@ -22,8 +22,7 @@ namespace ActiveDirectoryPhotoToolkit.Example
             var thumbnailPhoto = activeDirectoryPhoto.GetThumbnailPhoto(username, format);
 
             // 4. Save the file to disk
-            //activeDirectoryPhoto.SaveThumbnailToDisk(thumbnailPhoto, "C:\\");
-            File.WriteAllBytes(username + "." + format, thumbnailPhoto);
+            activeDirectoryPhoto.SaveThumbnailToDisk(thumbnailPhoto, "C:\\");   
         }
     }
 }

@@ -16,7 +16,7 @@ namespace ActiveDirectoryPhotoToolkit
             BMP, JPG, PNG
         }
 
-        public byte[] GetThumbnailPhoto(string userName, Format format)
+        public Thumbnail GetThumbnailPhoto(string userName, Format format)
         {
             const int imageQuality = 95;
             var imageSize = new Size(96, 96);
@@ -75,7 +75,14 @@ namespace ActiveDirectoryPhotoToolkit
                                 // rewind the memory stream so that it can be exported.
                                 outStream.Position = 0;
 
-                                return outStream.ToArray();
+                                var thumbnail = new Thumbnail()
+                                {
+                                    Name = userName,
+                                    Format = format,
+                                    ThumbnailData = outStream.ToArray()
+                                };
+
+                                return thumbnail;         
                             }
                         }
                     }
@@ -117,9 +124,9 @@ namespace ActiveDirectoryPhotoToolkit
             }
         }
 
-        public void SaveThumbnailToDisk(byte[] thumbNail, string location)
+        public void SaveThumbnailToDisk(Thumbnail thumbnail, string location)
         {
-            throw new System.NotImplementedException();
+            File.WriteAllBytes(thumbnail.Name + "." + thumbnail.Format, thumbnail.ThumbnailData);
         }
     }
 }
