@@ -12,24 +12,17 @@ Installation is done via NuGet:
 
 Initial setup:
 
-    var directoryEntry = new DirectoryEntry("LDAP://contoso.com");
-    var adPhoto = new ActiveDirectoryPhoto(directoryEntry);
+    var activeDirectoryPhoto = new ActiveDirectoryPhoto();
 
-Retreive a users profile photo from Active Directory in the native format - Bitmap:
+Retreive a users profile photo from Active Directory
 
-    var bitmap = adPhoto.GetThumbnailPhotoAsBitmap("ghuntley");
+    var username = "ghuntley"
+    var format = ActiveDirectoryPhoto.Format.PNG;
+    var thumbnailPhoto = activeDirectoryPhoto.GetThumbnailPhoto(username, format);
+    
+## Available Formats
 
-Retreive a users profile photo from Active Directory and convert from native format (Bitmap) to a Jpeg:
-
-    var jpeg = adPhoto.GetThumbnailPhotoAsJpeg("ghuntley");
-
-Retreive a users profile photo from Active Directory and convert from native format (Bitmap) to a Png:
-
-    var png = adPhoto.GetThumbnailPhotoAsPng("ghuntley");
-
-## Remarks
-
-The ability to set a users profile photo is within scope but at this stage is not implemented. This will be revisted in the future but please consider forking this libary, implementing it yourself and submitting a pull-request.
+The following formats are available: Bitmap, Jpeg and PNG.  These are located within the Formats enum in the ActiveDirectoryPhoto class.
 
 ## With thanks to
 * The icon "<a href="http://thenounproject.com/term/man/32098/" target="_blank">Man</a>" designed by <a href="http://thenounproject.com/SimpleIcons" target="_blank">Simple Icons</a> from The Noun Project.
