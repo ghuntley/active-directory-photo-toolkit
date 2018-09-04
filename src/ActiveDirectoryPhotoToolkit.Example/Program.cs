@@ -4,8 +4,7 @@ namespace ActiveDirectoryPhotoToolkit.Example
 {
     internal class Program
     {
-
-        private static void Main(string[] args)
+        private static void Main()
         {
             // 1. Setup
             var activeDirectoryPhoto = new ActiveDirectoryPhoto();
@@ -18,7 +17,7 @@ namespace ActiveDirectoryPhotoToolkit.Example
             activeDirectoryPhoto.SetThumbnailPhoto(username, @"C:\photo.jpg");
 
             // 3. Getting a Thumbnail
-            var format = ActiveDirectoryPhoto.Format.PNG;
+            var format = ActiveDirectoryPhoto.Format.GIF;
             var thumbnailPhoto = activeDirectoryPhoto.GetThumbnailPhoto(username, format);
 
             // 4. Save the file to disk where the program is launched from

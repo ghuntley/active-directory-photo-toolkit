@@ -5,22 +5,17 @@ using ImageProcessor;
 using ImageProcessor.Imaging.Formats;
 using System.IO;
 
-
-
 namespace ActiveDirectoryPhotoToolkit
 {
     public class ActiveDirectoryPhoto : IActiveDirectoryPhoto
     {
         public enum Format
         {
-            BMP, JPG, PNG
+            BMP, GIF, JPG, PNG
         }
 
         public Thumbnail GetThumbnailPhoto(string userName, Format format)
         {
-            const int imageQuality = 95;
-            var imageSize = new Size(96, 96);
-
             var principalContext = new PrincipalContext(ContextType.Domain);
 
             var userPrincipal = new UserPrincipal(principalContext)
@@ -37,12 +32,12 @@ namespace ActiveDirectoryPhotoToolkit
 
             if (result != null)
             {
-                using (var entry = result.GetUnderlyingObject() as DirectoryEntry)
+                using (var user = result.GetUnderlyingObject() as DirectoryEntry)
                 {
-                    if (entry.Properties["thumbnailPhoto"] != null)
+                    if (user.Properties["thumbnailPhoto"] != null)
                     {
                         //if bitmap just return this...
-                        var bytes = entry.Properties["thumbnailPhoto"][0] as byte[];
+                        var bytes = user.Properties["thumbnailPhoto"][0] as byte[];
 
                         //if not bimap do above then do this...
                         using (var inStream = new MemoryStream(bytes))
@@ -51,6 +46,9 @@ namespace ActiveDirectoryPhotoToolkit
                             {
                                 using (var imageFactory = new ImageFactory())
                                 {
+                                    const int imageQuality = 95;
+                                    var imageSize = new Size(96, 96);
+
                                     imageFactory.Load(inStream);
 
                                     switch (format)
@@ -61,8 +59,10 @@ namespace ActiveDirectoryPhotoToolkit
                                         case Format.PNG:
                                             imageFactory.Format(new PngFormat());
                                             break;
+                                        case Format.GIF:
+                                            imageFactory.Format(new GifFormat());
+                                            break;
                                         case Format.BMP:
-                                        default:
                                             imageFactory.Format(new BitmapFormat());
                                             break;
                                     }
@@ -88,6 +88,10 @@ namespace ActiveDirectoryPhotoToolkit
                     }
                 }
             }
+            else
+            {
+                throw new NoMatchingPrincipalException();
+            }
 
             return null;
         }
@@ -110,23 +114,20 @@ namespace ActiveDirectoryPhotoToolkit
 
             if (result != null)
             {
-                byte[] bytes = File.ReadAllBytes(thumbNailLocation);
+                var bytes = File.ReadAllBytes(thumbNailLocation);
 
-                using (var entry = result.GetUnderlyingObject() as DirectoryEntry)
+                using (var user = result.GetUnderlyingObject() as DirectoryEntry)
                 {
-                    if (entry.Properties["thumbnailPhoto"] != null)
-                    {
-                        //if bitmap just return this...
-                        entry.Properties["thumbnailPhoto"][0] = bytes;
-                        entry.CommitChanges();
-                    }
+                    //if bitmap just return this...
+                    user.Properties["thumbnailPhoto"][0] = bytes;
+                    user.CommitChanges();
                 }
             }
         }
 
         public void SaveThumbnailToDisk(Thumbnail thumbnail)
         {
-            File.WriteAllBytes(thumbnail.Name + "." + thumbnail.Format, thumbnail.ThumbnailData);
+            File.WriteAllBytes($"{thumbnail.Name}.{thumbnail.Format}", thumbnail.ThumbnailData);
         }
 
         public void SaveThumbnailToDisk(Thumbnail thumbnail, string location)
