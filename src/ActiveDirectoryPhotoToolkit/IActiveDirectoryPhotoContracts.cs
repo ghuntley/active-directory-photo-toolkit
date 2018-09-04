@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using ActiveDirectoryPhotoToolkit;
 
 namespace ActiveDirectoryPhotoToolkit
 {
     [ContractClassFor(typeof(IActiveDirectoryPhoto))]
     internal abstract class ActiveDirectoryPhotoContracts : IActiveDirectoryPhoto
     {
-        public byte[] GetThumbnailPhoto(string userName, string format)
+        public byte[] GetThumbnailPhoto(string userName, ActiveDirectoryPhoto.Format format)
         {
             Contract.Requires(!string.IsNullOrWhiteSpace(userName));
 

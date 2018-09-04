@@ -13,7 +13,7 @@ namespace ActiveDirectoryPhotoToolkit
     {
         public enum Format
         {
-            Bitmap, JPG, PNG
+            BMP, JPG, PNG
         }
 
         public byte[] GetThumbnailPhoto(string userName, Format format)
@@ -57,10 +57,10 @@ namespace ActiveDirectoryPhotoToolkit
 
                                     switch (format)
                                     {
-                                        case "JPG":
+                                        case Format.JPG:
                                             imageFactory.Format(new JpegFormat());
                                             break;
-                                        case "PNG":
+                                        case Format.PNG:
                                             imageFactory.Format(new PngFormat());
                                             break;
                                         default:
