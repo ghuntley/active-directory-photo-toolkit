@@ -11,23 +11,18 @@ namespace ActiveDirectoryPhotoToolkit.Example
             // 1. Setup
             var activeDirectoryPhoto = new ActiveDirectoryPhoto();
 
-
-
             Console.Write("Username: ");
             var username = Console.ReadLine();
 
-            var format = ActiveDirectoryPhoto.Format.PNG;
-
-
             // 2. Setting a Thumbnail
-            //activeDirectoryPhoto.SetThumbnailPhoto(username, @"C:\face2.jpg");
-
+            activeDirectoryPhoto.SetThumbnailPhoto(username, @"C:\photo.jpg");
 
             // 3. Getting a Thumbnail
+            var format = ActiveDirectoryPhoto.Format.PNG;
             var thumbnailPhoto = activeDirectoryPhoto.GetThumbnailPhoto(username, format);
 
-
-            // 4. Save the file
+            // 4. Save the file to disk
+            //activeDirectoryPhoto.SaveThumbnailToDisk(thumbnailPhoto, "C:\\");
             File.WriteAllBytes(username + "." + format, thumbnailPhoto);
         }
     }

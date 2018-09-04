@@ -116,5 +116,10 @@ namespace ActiveDirectoryPhotoToolkit
                 }
             }
         }
+
+        public void SaveThumbnailToDisk(byte[] thumbNail, string location)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

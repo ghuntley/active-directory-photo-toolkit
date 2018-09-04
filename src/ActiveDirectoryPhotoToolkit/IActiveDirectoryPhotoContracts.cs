@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using ActiveDirectoryPhotoToolkit;
 
 namespace ActiveDirectoryPhotoToolkit
 {
@@ -11,6 +10,11 @@ namespace ActiveDirectoryPhotoToolkit
         {
             Contract.Requires(!string.IsNullOrWhiteSpace(userName));
 
+            throw new NotImplementedException();
+        }
+
+        public void SaveThumbnailToDisk(byte[] thumbNail, string location)
+        {
             throw new NotImplementedException();
         }
 

@@ -8,5 +8,6 @@ namespace ActiveDirectoryPhotoToolkit
     {
         byte[] GetThumbnailPhoto(string userName, ActiveDirectoryPhoto.Format format);
         void SetThumbnailPhoto(string userName, string thumbNailLocation);
+        void SaveThumbnailToDisk(byte[] thumbNail, string location);
     }
 }
