@@ -37,14 +37,12 @@ namespace ActiveDirectoryPhotoToolkit
 
             if (result != null)
             {
-                byte[] bytes;
-
                 using (var entry = result.GetUnderlyingObject() as DirectoryEntry)
                 {
                     if (entry.Properties["thumbnailPhoto"] != null)
                     {
                         //if bitmap just return this...
-                        bytes = entry.Properties["thumbnailPhoto"][0] as byte[];
+                        var bytes = entry.Properties["thumbnailPhoto"][0] as byte[];
 
                         //if not bimap do above then do this...
                         using (var inStream = new MemoryStream(bytes))
@@ -63,6 +61,7 @@ namespace ActiveDirectoryPhotoToolkit
                                         case Format.PNG:
                                             imageFactory.Format(new PngFormat());
                                             break;
+                                        case Format.BMP:
                                         default:
                                             imageFactory.Format(new BitmapFormat());
                                             break;
@@ -79,8 +78,6 @@ namespace ActiveDirectoryPhotoToolkit
                                 return outStream.ToArray();
                             }
                         }
-
-                        return bytes;
                     }
                 }
             }
@@ -90,10 +87,7 @@ namespace ActiveDirectoryPhotoToolkit
 
         public void SetThumbnailPhoto(string userName, string thumbNailLocation)
         {
-            const int imageQuality = 95;
-            var imageSize = new Size(96, 96);
-
-            var principalContext = new PrincipalContext(ContextType.Domain);
+           var principalContext = new PrincipalContext(ContextType.Domain);
 
             var userPrincipal = new UserPrincipal(principalContext)
             {
