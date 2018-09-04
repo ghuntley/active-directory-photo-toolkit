@@ -20,6 +20,16 @@ Retreive a users profile photo from Active Directory
     var format = ActiveDirectoryPhoto.Format.PNG;
     var thumbnailPhoto = activeDirectoryPhoto.GetThumbnailPhoto(username, format);
     
+Saving a retrieved user profile photo to disk after using the above sample
+    
+    activeDirectoryPhoto.SaveThumbnailToDisk(thumbnailPhoto);
+  
+Setting a users profile photo
+    
+    var username = "ghuntley"
+    var photo = @"C:\photo.jpg"
+    activeDirectoryPhoto.SetThumbnailPhoto(username, photo);
+    
 ## Available Formats
 
 The following formats are available: Bitmap, Jpeg and PNG.  These are located within the Formats enum in the ActiveDirectoryPhoto class.
