@@ -3,7 +3,6 @@ using System.Diagnostics.Contracts;
 
 namespace ActiveDirectoryPhotoToolkit
 {
-    [ContractClass(typeof(ActiveDirectoryPhotoContracts))]
     public interface IActiveDirectoryPhoto
     {
         Thumbnail GetThumbnailPhoto(string userName, ActiveDirectoryPhoto.Format format);
