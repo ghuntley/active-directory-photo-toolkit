@@ -124,9 +124,14 @@ namespace ActiveDirectoryPhotoToolkit
             }
         }
 
-        public void SaveThumbnailToDisk(Thumbnail thumbnail, string location)
+        public void SaveThumbnailToDisk(Thumbnail thumbnail)
         {
             File.WriteAllBytes(thumbnail.Name + "." + thumbnail.Format, thumbnail.ThumbnailData);
+        }
+
+        public void SaveThumbnailToDisk(Thumbnail thumbnail, string location)
+        {
+            File.WriteAllBytes(Path.Combine(location, $"{thumbnail.Name}.{thumbnail.Format}"), thumbnail.ThumbnailData);
         }
     }
 }

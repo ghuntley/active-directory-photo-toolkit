@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace ActiveDirectoryPhotoToolkit.Example
 {
@@ -11,6 +10,7 @@ namespace ActiveDirectoryPhotoToolkit.Example
             // 1. Setup
             var activeDirectoryPhoto = new ActiveDirectoryPhoto();
 
+            // Example for getting the username
             Console.Write("Username: ");
             var username = Console.ReadLine();
 
@@ -21,8 +21,11 @@ namespace ActiveDirectoryPhotoToolkit.Example
             var format = ActiveDirectoryPhoto.Format.PNG;
             var thumbnailPhoto = activeDirectoryPhoto.GetThumbnailPhoto(username, format);
 
-            // 4. Save the file to disk
-            activeDirectoryPhoto.SaveThumbnailToDisk(thumbnailPhoto, "C:\\");   
+            // 4. Save the file to disk where the program is launched from
+            activeDirectoryPhoto.SaveThumbnailToDisk(thumbnailPhoto);
+
+            // 5. Save the file to disk at a particular location
+            activeDirectoryPhoto.SaveThumbnailToDisk(thumbnailPhoto, "C:\\");
         }
     }
 }
