@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics.Contracts;
-
-namespace ActiveDirectoryPhotoToolkit
+﻿namespace ActiveDirectoryPhotoToolkit
 {
     public interface IActiveDirectoryPhoto
     {

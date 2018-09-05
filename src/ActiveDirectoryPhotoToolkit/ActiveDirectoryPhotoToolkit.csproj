@@ -88,6 +88,7 @@
   <ItemGroup>
     <Compile Include="ActiveDirectoryPhoto.cs" />
     <Compile Include="IActiveDirectoryPhoto.cs" />
+    <Compile Include="IThumbnail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Thumbnail.cs" />
   </ItemGroup>

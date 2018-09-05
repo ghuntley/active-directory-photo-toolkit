@@ -113,7 +113,6 @@ namespace ActiveDirectoryPhotoToolkit
 
                     using (var user = result.GetUnderlyingObject() as DirectoryEntry)
                     {
-                        //if bitmap just return this...
                         user.Properties["thumbnailPhoto"][0] = bytes;
                         user.CommitChanges();
                     }
