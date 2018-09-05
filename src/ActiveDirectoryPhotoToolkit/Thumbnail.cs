@@ -1,6 +1,6 @@
 ﻿namespace ActiveDirectoryPhotoToolkit
 {
-    public class Thumbnail
+    public class Thumbnail : IThumbnail
     {
         public string Name { get; set; }
         public byte[] ThumbnailData { get; set; }

@@ -1,16 +1,15 @@
 ﻿using System;
-using System.IO;
 
 namespace ActiveDirectoryPhotoToolkit.Example
 {
     internal class Program
     {
-
-        private static void Main(string[] args)
+        private static void Main()
         {
             // 1. Setup
             var activeDirectoryPhoto = new ActiveDirectoryPhoto();
 
+            // Example for getting the username
             Console.Write("Username: ");
             var username = Console.ReadLine();
 
@@ -18,12 +17,14 @@ namespace ActiveDirectoryPhotoToolkit.Example
             activeDirectoryPhoto.SetThumbnailPhoto(username, @"C:\photo.jpg");
 
             // 3. Getting a Thumbnail
-            var format = ActiveDirectoryPhoto.Format.PNG;
+            var format = ActiveDirectoryPhoto.Format.GIF;
             var thumbnailPhoto = activeDirectoryPhoto.GetThumbnailPhoto(username, format);
 
-            // 4. Save the file to disk
-            //activeDirectoryPhoto.SaveThumbnailToDisk(thumbnailPhoto, "C:\\");
-            File.WriteAllBytes(username + "." + format, thumbnailPhoto);
+            // 4. Save the file to disk where the program is launched from
+            activeDirectoryPhoto.SaveThumbnailToDisk(thumbnailPhoto);
+
+            // 5. Save the file to disk at a particular location
+            activeDirectoryPhoto.SaveThumbnailToDisk(thumbnailPhoto, "C:\\");
         }
     }
 }
