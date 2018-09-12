@@ -46,7 +46,7 @@ namespace ActiveDirectoryPhotoToolkit
 
             if (bytes != null)
             {
-                using (var inStream = new MemoryStream(bytes ?? throw new InvalidOperationException()))
+                using (var inStream = new MemoryStream(bytes))
                 using (var outStream = new MemoryStream())
                 {
                     using (var imageFactory = new ImageFactory())
