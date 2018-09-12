@@ -10,8 +10,6 @@ namespace ActiveDirectoryPhotoToolkit
 {
     public class ActiveDirectoryPhoto : IActiveDirectoryPhoto
     {
-        private const string FileName = "{thumbnail.Name}.{thumbnail.Format}";
-
         public enum Format
         {
             BMP, GIF, JPG, PNG
@@ -124,12 +122,12 @@ namespace ActiveDirectoryPhotoToolkit
 
         public void SaveThumbnailToDisk(Thumbnail thumbnail)
         {
-            File.WriteAllBytes(string.Format(FileName), thumbnail.ThumbnailData);
+            File.WriteAllBytes(thumbnail.Name + thumbnail.Format, thumbnail.ThumbnailData);
         }
 
         public void SaveThumbnailToDisk(Thumbnail thumbnail, string location)
         {
-            File.WriteAllBytes(Path.Combine(location, string.Format(FileName)), thumbnail.ThumbnailData);
+            File.WriteAllBytes(Path.Combine(location, thumbnail.Name + thumbnail.Format), thumbnail.ThumbnailData);
         }
     }
 }
