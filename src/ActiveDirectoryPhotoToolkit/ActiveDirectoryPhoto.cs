@@ -113,7 +113,7 @@ namespace ActiveDirectoryPhotoToolkit
 
                     using (var user = result.GetUnderlyingObject() as DirectoryEntry)
                     {
-                        user.Properties["thumbnailPhoto"][0] = bytes;
+                        user.Properties["thumbnailPhoto"].Value = bytes;
                         user.CommitChanges();
                     }
                 }
