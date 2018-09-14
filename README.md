@@ -28,7 +28,7 @@ Saving a retrieved user to a specific folder, after using the retrieve a thumbna
 
     activeDirectoryPhoto.SaveThumbnailToDisk(thumbnailPhoto, "C:\\");
     
-Available formats are available in the ActiveDirectoryPhoto.Format enum.
+Available formats are BMP, GIF, JPG and PNG which are located in the ActiveDirectoryPhoto.Format enum.
      
      public enum Format
         {
