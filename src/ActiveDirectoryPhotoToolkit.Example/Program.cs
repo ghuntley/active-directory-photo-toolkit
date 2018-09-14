@@ -1,30 +1,30 @@
-﻿using System.DirectoryServices;
-using System.IO;
+﻿using System;
 
 namespace ActiveDirectoryPhotoToolkit.Example
 {
     internal class Program
     {
-        public static DirectoryEntry DirectoryEntry { get; private set; }
-        public static IActiveDirectoryPhoto ActiveDirectoryPhoto { get; private set; }
-
-        private static void Main(string[] args)
+        private static void Main()
         {
-            // 1. setup
-            DirectoryEntry = new DirectoryEntry("LDAP://contoso.com");
-            ActiveDirectoryPhoto = new ActiveDirectoryPhoto(DirectoryEntry);
+            // 1. Setup
+            var activeDirectoryPhoto = new ActiveDirectoryPhoto();
 
-            // 2. save thumbnailPhoto to disk.
-            SaveThumbnailPhotoToDisk();
-        }
+            // Example for getting the username
+            Console.Write("Username: ");
+            var username = Console.ReadLine();
 
-        public static void SaveThumbnailPhotoToDisk()
-        {
-            const string username = "ghuntley";
+            // 2. Setting a Thumbnail
+            activeDirectoryPhoto.SetThumbnailPhoto(username, @"C:\photo.jpg");
 
-            byte[] thumbnailPhoto = ActiveDirectoryPhoto.GetThumbnailPhotoAsJpeg(username);
+            // 3. Getting a Thumbnail
+            var format = ActiveDirectoryPhoto.Format.GIF;
+            var thumbnailPhoto = activeDirectoryPhoto.GetThumbnailPhoto(username, format);
 
-            File.WriteAllBytes(username + ".jpg", thumbnailPhoto);
+            // 4. Save the file to disk where the program is launched from
+            activeDirectoryPhoto.SaveThumbnailToDisk(thumbnailPhoto);
+
+            // 5. Save the file to disk at a particular location
+            activeDirectoryPhoto.SaveThumbnailToDisk(thumbnailPhoto, "C:\\");
         }
     }
 }

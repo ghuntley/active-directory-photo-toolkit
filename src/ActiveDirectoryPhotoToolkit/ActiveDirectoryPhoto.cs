@@ -1,118 +1,133 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using System.DirectoryServices;
+using System.DirectoryServices.AccountManagement;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using ImageProcessor;
 using ImageProcessor.Imaging.Formats;
+using System.IO;
 
 namespace ActiveDirectoryPhotoToolkit
 {
     public class ActiveDirectoryPhoto : IActiveDirectoryPhoto
     {
-        /// <example>
-        ///     var directoryEntry = new DirectoryEntry("LDAP://contoso.com");
-        ///     var adPhoto = new ActiveDirectoryPhoto(directoryEntry);
-        ///     var jpeg = adPhoto.GetThumbnailPhotoAsJpeg("ghuntley");
-        ///     var bitmap = adPhoto.GetThumbnailPhotoAsBitmap("ghuntley");
-        /// </example>
-        /// <param name="directoryEntry"></param>
-        public ActiveDirectoryPhoto(DirectoryEntry directoryEntry)
+        public enum Format
         {
-            Contract.Requires(directoryEntry != null);
-            Contract.Ensures(DirectoryEntry == directoryEntry);
-
-            DirectoryEntry = directoryEntry;
+            BMP, GIF, JPG, PNG
         }
 
-        public DirectoryEntry DirectoryEntry { get; private set; }
-
-        /// <summary>
-        ///     Returns a Bitmap byte[] of the Active Directory thumbnailPhoto for the specified username.
-        /// </summary>
-        /// <param name="userName"></param>
-        /// -
-        /// <returns></returns>
-        public Byte[] GetThumbnailPhotoAsBitmap(string userName)
+        public Thumbnail GetThumbnailPhoto(string userName, Format format)
         {
-            var directorySearcher = new DirectorySearcher(DirectoryEntry)
+            byte[] bytes = null;
+
+            using (var principalContext = new PrincipalContext(ContextType.Domain))
             {
-                Filter = string.Format("(&(SAMAccountName={0}))", userName)
-            };
+                var userPrincipal = new UserPrincipal(principalContext)
+                {
+                    SamAccountName = userName
+                };
 
-            SearchResult user = directorySearcher.FindOne();
+                var principalSearcher = new PrincipalSearcher
+                {
+                    QueryFilter = userPrincipal
+                };
 
-            var bytes = user.Properties["thumbnailPhoto"][0] as byte[];
+                var result = principalSearcher.FindOne();
 
-            return bytes;
-        }
+                if (result != null)
+                {
+                    using (var user = result.GetUnderlyingObject() as DirectoryEntry)
+                    {
+                        bytes = user.Properties["thumbnailPhoto"][0] as byte[];
+                    }
+                }
+            }
 
-        /// <summary>
-        ///     Returns a 96 (w) x 96 (h) JPEG image as byte[] of the Active Directory thumbnailPhoto for the specified username.
-        /// </summary>
-        /// <param name="userName"></param>
-        /// <returns></returns>
-        public Byte[] GetThumbnailPhotoAsJpeg(string userName)
-        {
-            byte[] bytes = GetThumbnailPhotoAsBitmap(userName);
-
-            const int imageQuality = 95;
-            var imageSize = new Size(96, 96);
-
-            using (var inStream = new MemoryStream(bytes))
+            if (bytes != null)
             {
+                using (var inStream = new MemoryStream(bytes))
                 using (var outStream = new MemoryStream())
                 {
                     using (var imageFactory = new ImageFactory())
                     {
-                        imageFactory.Load(inStream)
-                            .Format(new JpegFormat())
-                            .Resize(imageSize)
-                            .Quality(imageQuality)
-                            .Save(outStream);
+                        const int imageQuality = 95;
+                        var imageSize = new Size(96, 96);
+
+                        imageFactory.Load(inStream);
+
+                        switch (format)
+                        {
+                            case Format.JPG:
+                                imageFactory.Format(new JpegFormat());
+                                break;
+                            case Format.PNG:
+                                imageFactory.Format(new PngFormat());
+                                break;
+                            case Format.GIF:
+                                imageFactory.Format(new GifFormat());
+                                break;
+                            case Format.BMP:
+                                imageFactory.Format(new BitmapFormat());
+                                break;
+                        }
+
+                        imageFactory.Resize(imageSize);
+                        imageFactory.Quality(imageQuality);
+                        imageFactory.Save(outStream);
                     }
 
-                    // rewind the memory stream so that it can be exported.
                     outStream.Position = 0;
 
-                    return outStream.ToArray();
+                    var thumbnail = new Thumbnail()
+                    {
+                        Name = userName,
+                        Format = format,
+                        ThumbnailData = outStream.ToArray()
+                    };
+
+                    return thumbnail;
+                }
+            }
+
+            return null;
+        }
+
+        public void SetThumbnailPhoto(string userName, string thumbNailLocation)
+        {
+            using (var principalContext = new PrincipalContext(ContextType.Domain))
+            {
+                var userPrincipal = new UserPrincipal(principalContext)
+                {
+                    SamAccountName = userName
+                };
+
+                var principalSearcher = new PrincipalSearcher
+                {
+                    QueryFilter = userPrincipal
+                };
+
+                var result = principalSearcher.FindOne();
+
+                if (result != null)
+                {
+                    var bytes = File.ReadAllBytes(thumbNailLocation);
+
+                    using (var user = result.GetUnderlyingObject() as DirectoryEntry)
+                    {
+                        user.Properties["thumbnailPhoto"].Value = bytes;
+                        user.CommitChanges();
+                    }
                 }
             }
         }
 
-        /// <summary>
-        ///     Returns a 96 (w) x 96 (h) PNG image as byte[] of the Active Directory thumbnailPhoto for the specified username.
-        /// </summary>
-        /// <param name="userName"></param>
-        /// <returns></returns>
-        public Byte[] GetThumbnailPhotoAsPng(string userName)
+        public void SaveThumbnailToDisk(Thumbnail thumbnail)
         {
-            byte[] bytes = GetThumbnailPhotoAsBitmap(userName);
+            File.WriteAllBytes(thumbnail.Name + "." + thumbnail.Format, thumbnail.ThumbnailData);
+        }
 
-            const int imageQuality = 95;
-            var imageSize = new Size(96, 96);
-
-            using (var inStream = new MemoryStream(bytes))
-            {
-                using (var outStream = new MemoryStream())
-                {
-                    using (var imageFactory = new ImageFactory())
-                    {
-                        imageFactory.Load(inStream)
-                            .Format(new PngFormat())
-                            .Resize(imageSize)
-                            .Quality(imageQuality)
-                            .Save(outStream);
-                    }
-
-                    // rewind the memory stream so that it can be exported.
-                    outStream.Position = 0;
-
-                    return outStream.ToArray();
-                }
-            }
-
+        public void SaveThumbnailToDisk(Thumbnail thumbnail, string location)
+        {
+            File.WriteAllBytes(Path.Combine(location, thumbnail.Name + "." + thumbnail.Format), thumbnail.ThumbnailData);
         }
     }
 }
