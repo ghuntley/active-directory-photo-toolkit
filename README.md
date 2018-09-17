@@ -16,7 +16,7 @@ Initial setup:
 
 Retrieve a users profile photo from Active Directory
 
-    var username = "ghuntley"
+    var username = "ghuntley";
     var format = ActiveDirectoryPhoto.Format.PNG;
     var thumbnailPhoto = activeDirectoryPhoto.GetThumbnailPhoto(username, format);
     
@@ -37,8 +37,8 @@ Available formats are BMP, GIF, JPG and PNG which are located in the ActiveDirec
   
 Setting a users profile photo
     
-    var username = "ghuntley"
-    var photo = @"C:\photo.jpg"
+    var username = "ghuntley";
+    var photo = @"C:\photo.jpg";
     activeDirectoryPhoto.SetThumbnailPhoto(username, photo);
 
 ## With thanks to
