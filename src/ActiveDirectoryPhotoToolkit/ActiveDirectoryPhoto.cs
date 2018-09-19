@@ -52,7 +52,6 @@ namespace ActiveDirectoryPhotoToolkit
                 using (var imageFactory = new ImageFactory())
                 {
                     const int imageQuality = 95;
-                    var imageSize = new Size(96, 96);
 
                     imageFactory.Load(inStream);
 
@@ -72,7 +71,6 @@ namespace ActiveDirectoryPhotoToolkit
                             break;
                     }
 
-                    imageFactory.Resize(imageSize);
                     imageFactory.Quality(imageQuality);
                     imageFactory.Save(outStream);
                 }
