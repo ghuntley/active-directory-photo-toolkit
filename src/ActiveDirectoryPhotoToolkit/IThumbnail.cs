@@ -1,6 +1,6 @@
 ﻿namespace ActiveDirectoryPhotoToolkit
 {
-    public interface IThumbnail
+    internal interface IThumbnail
     {
         string Name { get; set; }
         byte[] ThumbnailData { get; set; }

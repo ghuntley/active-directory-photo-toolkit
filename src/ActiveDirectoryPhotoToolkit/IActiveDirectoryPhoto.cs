@@ -2,7 +2,7 @@
 
 namespace ActiveDirectoryPhotoToolkit
 {
-    public interface IActiveDirectoryPhoto
+    internal interface IActiveDirectoryPhoto
     {
         Thumbnail GetThumbnailPhoto(string userName, ActiveDirectoryPhoto.Format format);
         void SetThumbnailPhoto(string userName, string thumbNailLocation);

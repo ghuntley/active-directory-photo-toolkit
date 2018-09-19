@@ -5,6 +5,7 @@ using System.Drawing;
 using ImageProcessor;
 using ImageProcessor.Imaging.Formats;
 using System.IO;
+using ActiveDirectoryPhotoToolkit.ExceptionClasses;
 
 namespace ActiveDirectoryPhotoToolkit
 {
@@ -100,12 +101,12 @@ namespace ActiveDirectoryPhotoToolkit
                 }
                 else
                 {
-                    throw new Exception("The image is over the maximum 100KB limit for Active Directory");
+                    throw new PhotoTooLargeException();
                 }
             }
             else
             {
-                throw new Exception("The image height or width is over the 200px limit for Active Directory");
+                throw new PhotoResolutionInvalidException();
             }
         }
 
