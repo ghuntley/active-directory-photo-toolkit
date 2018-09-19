@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ActiveDirectoryPhotoToolkit")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Ability to retreive or set a users thumbnail photo within Active Directory.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ActiveDirectoryPhotoToolkit")]
