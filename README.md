@@ -24,8 +24,11 @@ Available formats are available in the ActiveDirectoryPhoto.Format enum.
      
      public enum Format
         {
-            BMP, GIF, JPG, PNG
-        }
+            Bmp, 
+            Gif, 
+            Jpg, 
+            Png
+        };
     
 Saving a retrieved user profile photo to disk in the same folder as the execution, after using the above sample
     
@@ -40,6 +43,11 @@ Setting a users profile photo
     var username = "ghuntley";
     var photo = @"C:\photo.jpg";
     activeDirectoryPhoto.SetThumbnailPhoto(username, photo);
+    
+Removing a users profile photo
+    
+    var username = "ghuntley";
+    activeDirectoryPhoto..RemoveThumnnailPhoto(username);
 
 ## With thanks to
 * The icon "<a href="http://thenounproject.com/term/man/32098/" target="_blank">Man</a>" designed by <a href="http://thenounproject.com/SimpleIcons" target="_blank">Simple Icons</a> from The Noun Project.
