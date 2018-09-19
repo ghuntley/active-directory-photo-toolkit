@@ -27,6 +27,9 @@ namespace ActiveDirectoryPhotoToolkit.Example
             // 5. Save the file to disk at a particular location
             var saveLocation = @"C:\";
             activeDirectoryPhoto.SaveThumbnailToDisk(thumbnailPhoto, saveLocation);
+
+            // 6. Remove a users thumbnail photo
+            activeDirectoryPhoto.RemoveThumnnailPhoto(username);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.DirectoryServices;
+﻿using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Drawing;
 using ImageProcessor;
@@ -18,6 +17,19 @@ namespace ActiveDirectoryPhotoToolkit
             Jpg,
             Png
         };
+
+        public void RemoveThumnnailPhoto(string username)
+        {
+            var result = GetUser(username);
+
+            if (result == null) return;
+
+            using (var user = result.GetUnderlyingObject() as DirectoryEntry)
+            {
+                user.Properties["thumbnailPhoto"].Clear();
+                user.CommitChanges();
+            }
+        }
 
         public Thumbnail GetThumbnailPhoto(string username, Format format)
         {
