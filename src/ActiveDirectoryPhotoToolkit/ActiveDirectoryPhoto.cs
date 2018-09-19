@@ -12,111 +12,100 @@ namespace ActiveDirectoryPhotoToolkit
     {
         public enum Format
         {
-            BMP, GIF, JPG, PNG
+            Bmp,
+            Gif,
+            Jpg,
+            Png
+        };
+
+        public Thumbnail GetThumbnailPhoto(string username, Format format)
+        {
+            byte[] bytes;
+
+            var result = GetUser(username);
+
+            if (result == null) return null;
+
+            using (var user = result.GetUnderlyingObject() as DirectoryEntry)
+            {
+                bytes = user.Properties["thumbnailPhoto"].Value as byte[];
+            }
+
+            if (bytes == null) return null;
+
+            using (var inStream = new MemoryStream(bytes))
+            using (var outStream = new MemoryStream())
+            {
+                using (var imageFactory = new ImageFactory())
+                {
+                    const int imageQuality = 95;
+                    var imageSize = new Size(96, 96);
+
+                    imageFactory.Load(inStream);
+
+                    switch (format)
+                    {
+                        case Format.Jpg:
+                            imageFactory.Format(new JpegFormat());
+                            break;
+                        case Format.Png:
+                            imageFactory.Format(new PngFormat());
+                            break;
+                        case Format.Gif:
+                            imageFactory.Format(new GifFormat());
+                            break;
+                        case Format.Bmp:
+                            imageFactory.Format(new BitmapFormat());
+                            break;
+                    }
+
+                    imageFactory.Resize(imageSize);
+                    imageFactory.Quality(imageQuality);
+                    imageFactory.Save(outStream);
+                }
+
+                outStream.Position = 0;
+
+                var thumbnail = new Thumbnail()
+                {
+                    Name = username,
+                    Format = format,
+                    ThumbnailData = outStream.ToArray()
+                };
+
+                return thumbnail;
+            }
         }
 
-        public Thumbnail GetThumbnailPhoto(string userName, Format format)
+        public void SetThumbnailPhoto(string username, string thumbNailLocation)
         {
-            byte[] bytes = null;
+            var result = GetUser(username);
 
-            using (var principalContext = new PrincipalContext(ContextType.Domain))
+            if (result == null) return;
+
+            var image = Image.FromFile(thumbNailLocation);
+
+            if (image.Height <= 200 && image.Width <= 200)
             {
-                var userPrincipal = new UserPrincipal(principalContext)
-                {
-                    SamAccountName = userName
-                };
+                var bytes = File.ReadAllBytes(thumbNailLocation);
 
-                var principalSearcher = new PrincipalSearcher
-                {
-                    QueryFilter = userPrincipal
-                };
-
-                var result = principalSearcher.FindOne();
-
-                if (result != null)
+                if (bytes.Length <= 100000)
                 {
                     using (var user = result.GetUnderlyingObject() as DirectoryEntry)
                     {
-                        bytes = user.Properties["thumbnailPhoto"][0] as byte[];
-                    }
-                }
-            }
-
-            if (bytes != null)
-            {
-                using (var inStream = new MemoryStream(bytes))
-                using (var outStream = new MemoryStream())
-                {
-                    using (var imageFactory = new ImageFactory())
-                    {
-                        const int imageQuality = 95;
-                        var imageSize = new Size(96, 96);
-
-                        imageFactory.Load(inStream);
-
-                        switch (format)
-                        {
-                            case Format.JPG:
-                                imageFactory.Format(new JpegFormat());
-                                break;
-                            case Format.PNG:
-                                imageFactory.Format(new PngFormat());
-                                break;
-                            case Format.GIF:
-                                imageFactory.Format(new GifFormat());
-                                break;
-                            case Format.BMP:
-                                imageFactory.Format(new BitmapFormat());
-                                break;
-                        }
-
-                        imageFactory.Resize(imageSize);
-                        imageFactory.Quality(imageQuality);
-                        imageFactory.Save(outStream);
-                    }
-
-                    outStream.Position = 0;
-
-                    var thumbnail = new Thumbnail()
-                    {
-                        Name = userName,
-                        Format = format,
-                        ThumbnailData = outStream.ToArray()
-                    };
-
-                    return thumbnail;
-                }
-            }
-
-            return null;
-        }
-
-        public void SetThumbnailPhoto(string userName, string thumbNailLocation)
-        {
-            using (var principalContext = new PrincipalContext(ContextType.Domain))
-            {
-                var userPrincipal = new UserPrincipal(principalContext)
-                {
-                    SamAccountName = userName
-                };
-
-                var principalSearcher = new PrincipalSearcher
-                {
-                    QueryFilter = userPrincipal
-                };
-
-                var result = principalSearcher.FindOne();
-
-                if (result != null)
-                {
-                    var bytes = File.ReadAllBytes(thumbNailLocation);
-
-                    using (var user = result.GetUnderlyingObject() as DirectoryEntry)
-                    {
-                        user.Properties["thumbnailPhoto"].Value = bytes;
+                        user.Properties["thumbnailPhoto"].Clear();
+                        user.Properties["thumbnailPhoto"].Add(bytes);
                         user.CommitChanges();
                     }
                 }
+                else
+                {
+                    throw new Exception("The image is over the maximum 100KB limit for Active Directory");
+                }
+            }
+            else
+            {
+                throw new Exception("The image height or width is over the 200px limit for Active Directory");
             }
         }
 
@@ -128,6 +117,26 @@ namespace ActiveDirectoryPhotoToolkit
         public void SaveThumbnailToDisk(Thumbnail thumbnail, string location)
         {
             File.WriteAllBytes(Path.Combine(location, thumbnail.Name + "." + thumbnail.Format), thumbnail.ThumbnailData);
+        }
+
+        private static Principal GetUser(string username)
+        {
+            using (var principalContext = new PrincipalContext(ContextType.Domain))
+            {
+                var userPrincipal = new UserPrincipal(principalContext)
+                {
+                    SamAccountName = username
+                };
+
+                var principalSearcher = new PrincipalSearcher
+                {
+                    QueryFilter = userPrincipal
+                };
+
+                var user = principalSearcher.FindOne();
+
+                return user;
+            }
         }
     }
 }

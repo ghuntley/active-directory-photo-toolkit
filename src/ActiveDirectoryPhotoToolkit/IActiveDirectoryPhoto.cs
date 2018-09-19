@@ -1,4 +1,6 @@
-﻿namespace ActiveDirectoryPhotoToolkit
+﻿using System.DirectoryServices.AccountManagement;
+
+namespace ActiveDirectoryPhotoToolkit
 {
     public interface IActiveDirectoryPhoto
     {
