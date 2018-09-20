@@ -52,3 +52,4 @@ Removing a users profile photo
 ## With thanks to
 * The icon "<a href="http://thenounproject.com/term/man/32098/" target="_blank">Man</a>" designed by <a href="http://thenounproject.com/SimpleIcons" target="_blank">Simple Icons</a> from The Noun Project.
 * ghuntley for the initial work
+* CaptainQwerty for aditional feature implmenation
