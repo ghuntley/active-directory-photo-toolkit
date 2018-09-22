@@ -37,7 +37,7 @@ Saving a retrieved user profile photo to disk in the same folder as the executio
 Saving a retrieved user to a specific folder, after using the retrieve a thumbnail example 
 
     activeDirectoryPhoto.SaveThumbnailToDisk(thumbnailPhoto, "C:\\");
-  
+
 Setting a users profile photo
     
     var username = "ghuntley";
