@@ -51,8 +51,8 @@ Removing a users profile photo
 
 ## Custom Exceptions
 There are two custom exceptions currently which can be caught and handled however you like.
-> PhotoResolutionInvalidException - Thrown when the image selected to upload is larger than 200x200px which is the limit set in Active Directory.
-> PhotoTooLargeException - Thrown when the image selected is larger than 100kb, again this is a limit set in Acitve Directory.
++ PhotoResolutionInvalidException - Thrown when the image selected to upload is larger than 200x200px which is the limit set in Active Directory.
++ PhotoTooLargeException - Thrown when the image selected is larger than 100kb, again this is a limit set in Acitve Directory.
 
 ## With thanks to
 * The icon "<a href="http://thenounproject.com/term/man/32098/" target="_blank">Man</a>" designed by <a href="http://thenounproject.com/SimpleIcons" target="_blank">Simple Icons</a> from The Noun Project.
