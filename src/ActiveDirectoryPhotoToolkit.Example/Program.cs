@@ -13,18 +13,23 @@ namespace ActiveDirectoryPhotoToolkit.Example
             Console.Write("Username: ");
             var username = Console.ReadLine();
 
-            // 2. Setting a Thumbnail
-            activeDirectoryPhoto.SetThumbnailPhoto(username, @"C:\photo.jpg");
+            // 2. Setting a thumbnail
+            var photoLocation = @"C:\photo.jpg";
+            activeDirectoryPhoto.SetThumbnailPhoto(username, photoLocation);
 
-            // 3. Getting a Thumbnail
-            var format = ActiveDirectoryPhoto.Format.GIF;
+            // 3. Getting a thumbnail
+            var format = ActiveDirectoryPhoto.Format.Gif;
             var thumbnailPhoto = activeDirectoryPhoto.GetThumbnailPhoto(username, format);
 
             // 4. Save the file to disk where the program is launched from
             activeDirectoryPhoto.SaveThumbnailToDisk(thumbnailPhoto);
 
             // 5. Save the file to disk at a particular location
-            activeDirectoryPhoto.SaveThumbnailToDisk(thumbnailPhoto, "C:\\");
+            var saveLocation = @"C:\";
+            activeDirectoryPhoto.SaveThumbnailToDisk(thumbnailPhoto, saveLocation);
+
+            // 6. Remove a users thumbnail photo
+            activeDirectoryPhoto.RemoveThumnnailPhoto(username);
         }
     }
 }
